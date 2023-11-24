@@ -14,7 +14,10 @@ import {
   update,
   getAll,
   getOne,
-  getTags,
+  createRent,
+  removeRent,
+  getAllRent,
+  getOneRent,
 } from "./Controllers/index.js";
 
 import {
@@ -25,7 +28,7 @@ import {
 
 mongoose
   .connect(
-    "mongodb+srv://admin:wwwwww@cluster0.gvhafjn.mongodb.net/blog?retryWrites=true&w=majority"
+    "mongodb+srv://admin:wwwwww@cluster0.gvhafjn.mongodb.net/nikolsky_news?retryWrites=true&w=majority"
   )
   .then(() => {
     console.log("Connected to MongoDB");
@@ -70,7 +73,6 @@ app.post(
 app.get("/auth/me", checkAuth, getMe);
 
 app.get("/posts", getAll);
-app.get("/tags", getTags);
 app.get("/posts/:id", getOne);
 app.post(
   "/posts",
@@ -81,6 +83,11 @@ app.post(
 );
 app.delete("/posts/:id", remove);
 app.patch("/posts/:id", postCreateValidation, handleValidationErrors, update);
+
+app.get("/rents", getAllRent);
+app.get("/rents/:id", getOneRent);
+app.post("/rents", createRent);
+app.delete("/rents/:id", removeRent);
 
 app.listen(4444, (err) => {
   if (err) throw err;

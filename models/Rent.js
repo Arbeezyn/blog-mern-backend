@@ -1,21 +1,24 @@
 import mongoose, { mongo } from "mongoose";
 
-const postSchema = new mongoose.Schema(
+const rentSchema = new mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
     },
-    text: {
+    area: {
       type: String,
       required: true,
       unique: true,
     },
-    imageUrl: {
+    phone: {
+      type: String,
+    },
+    email: {
       type: String,
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Post", postSchema);
+export default mongoose.model("Rent", rentSchema);

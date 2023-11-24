@@ -1,27 +1,23 @@
 import PostModel from "../models/Post.js";
 
 export const getAll = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 1000;
+  const skip = (page - 1) * limit;
+
   try {
-    const posts = await PostModel.find()
-      .populate({ path: "user", select: ["fullName", "avatarUrl"] })
-      .exec();
-    res.json(posts);
+    const data = await PostModel.find().skip(skip).limit(limit);
+    res.json(data);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Что-то пошло не так, попробуйте снова" });
+    console.error("Ошибка при получении данных:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
 export const getOne = async (req, res) => {
   try {
     const postId = req.params.id;
-    const doc = await PostModel.findOneAndUpdate(
-      { _id: postId },
-      { $inc: { viewsCount: 1 } },
-      {
-        returnDocument: "after",
-      }
-    ).exec();
+    const doc = await PostModel.findOne({ _id: postId }).exec();
 
     if (!doc) {
       res.status(404).json({ message: "Статья не найдена" });
@@ -57,8 +53,6 @@ export const create = async (req, res) => {
       title: req.body.title,
       text: req.body.text,
       imageUrl: req.body.imageUrl,
-      tags: req.body.tags,
-      user: req.userId,
     });
 
     const post = await doc.save();
@@ -80,8 +74,6 @@ export const update = async (req, res) => {
         title: req.body.title,
         text: req.body.text,
         imageUrl: req.body.imageUrl,
-        user: req.userId,
-        tags: req.body.tags,
       },
       {
         returnDocument: "after",
@@ -93,24 +85,6 @@ export const update = async (req, res) => {
     } else {
       res.json(doc);
     }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Что-то пошло не так, попробуйте снова" });
-  }
-};
-
-export const getTags = async (req, res) => {
-  try {
-    const posts = await PostModel.find().limit(5).exec();
-
-    const tags = posts
-      .map((post) => {
-        return post.tags;
-      })
-      .flat()
-      .slice(0, 5);
-
-    res.json(tags);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Что-то пошло не так, попробуйте снова" });
