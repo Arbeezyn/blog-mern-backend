@@ -1,9 +1,8 @@
 export { register, login, getMe } from "./UserController.js";
+export { create, remove, update, getAll, getOne } from "./PostController.js";
 export {
-  create,
-  remove,
-  update,
-  getAll,
-  getOne,
-  getTags,
-} from "./PostController.js";
+  createRent,
+  removeRent,
+  getAllRent,
+  getOneRent,
+} from "./RentController.js";
